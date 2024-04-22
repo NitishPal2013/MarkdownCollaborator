@@ -32,14 +32,36 @@ async def upload(file: UploadFile):
     raise HTTPException(status_code=500, detail='Upload failed. Please try again.')
   
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            await manager.send_personal_message(data, websocket)
-            await manager.broadcast(data)
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-        print("disconneted!!")
+
+@app.websocket("/ws/default")
+async def websocket_enpoint(websocket: WebSocket):
+   room_name = "default"
+   await manager.connect(websocket)
+   print(f"{websocket.client} just get added")
+   print(manager.active_connections)
+   await manager.join_room(websocket, room_name)
+   print(manager.rooms[room_name].connections, f"are in the {room_name}")
+   try: 
+      while True:
+         data = await websocket.receive_text()
+         await manager.send_personal_message(data, room_name)
+         await manager.broadcast(data, room_name)
+   except WebSocketDisconnect:
+      await manager.leave_room(websocket, room_name)
+      manager.disconnect(websocket)
+      print(f"{websocket.client} disconnected!!")
+
+
+@app.websocket("/ws/{room_name}")
+async def websocket_enpoint(websocket: WebSocket, room_name: str):
+   await manager.connect(websocket)
+   await manager.join_room(websocket, room_name)
+   try: 
+      while True:
+         data = await websocket.receive_text()
+         # await manager.send_personal_message(data, websocket, room_name)
+         await manager.broadcast(data, room_name, websocket)
+   except WebSocketDisconnect:
+      await manager.leave_room(websocket, room_name)
+      manager.disconnect(websocket)
+      print(f"{websocket.client} disconnected!!")
