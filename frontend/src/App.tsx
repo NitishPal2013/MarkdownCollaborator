@@ -1,10 +1,14 @@
 import './App.css'
-import Collab from './pages/Collab'
+import Home from './pages/Home'
+import { Link } from 'react-router-dom'
 function App() {
 
   return (
     <>
-      <Collab/>
+    {/* <Link to={"/room1"}>
+      Click to join room
+    </Link> */}
+    <Home/>
     </>
   )
 }

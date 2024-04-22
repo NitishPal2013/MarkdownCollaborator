@@ -8,7 +8,7 @@ export interface displayType{
 }
 
 const Dome: React.FC<displayType> = ({display_md}: displayType) => {
-  const {sendMessage, lastMessage} = useWebSocket('ws://localhost:8000/ws',{share: true});
+  const {sendMessage, lastMessage} = useWebSocket('ws://localhost:8000/ws/room1',{share: true});
 
   useEffect(()=>{
     if(display_md){
