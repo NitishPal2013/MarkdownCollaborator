@@ -5,10 +5,11 @@ import useWebSocket from 'react-use-websocket';
 
 export interface displayType{
   display_md: string | undefined
+  room_name: string
 }
 
-const Dome: React.FC<displayType> = ({display_md}: displayType) => {
-  const {sendMessage, lastMessage} = useWebSocket('ws://localhost:8000/ws/room1',{share: true});
+const Dome: React.FC<displayType> = ({display_md, room_name}: displayType) => {
+  const {sendMessage, lastMessage} = useWebSocket(`wss://${import.meta.env.VITE_DOMAIN}/ws/${room_name}`,{share: true});
 
   useEffect(()=>{
     if(display_md){
@@ -17,6 +18,7 @@ const Dome: React.FC<displayType> = ({display_md}: displayType) => {
 
   },[display_md]
   )
+
 
   const setAndsend = (val: string)=>{
     sendMessage(val)
@@ -27,6 +29,7 @@ const Dome: React.FC<displayType> = ({display_md}: displayType) => {
       value={lastMessage?.data}
       height='500px'
       onChange={(val)=>setAndsend(val)}
+      visible
     />
   )
 };

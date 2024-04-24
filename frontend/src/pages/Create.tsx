@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 import { TextField, Typography, Button } from '@mui/material'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator';
+import axios from 'axios';
+import Collab from './Collab';
 
 const Create: React.FC = () => {
 
   const [passcode, setPasscode] = useState<string>("");
   const [uniquename, setUniquename] = useState<string>("");
-  const navigate = useNavigate();
+  const [check, setCheck] = useState<boolean>(false);
 
   useEffect(() => {
     const lowerCaseName: string = uniqueNamesGenerator({
@@ -22,9 +23,32 @@ const Create: React.FC = () => {
 
 
   const handleCreateRoom :React.MouseEventHandler<HTMLButtonElement> | undefined = ()=>{
-      // send the details to the backend
+    const url = import.meta.env.VITE_BASE_URL  +"create";
+      const data = {
+        room_name: uniquename,
+        passcode: passcode
+      }
+      axios.post(url,data,{
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      })
+      .then(({data})=>{
+        if (data["created"]){
+          setCheck(true)
+        }
+        else if(!data["created"]){
+          alert("This Room already exist, Please refresh this page to generate new name for your room !")
+        }
+        else{
+          alert("Internal server Error!")
+        }
+      })
+  }
 
-      navigate(`/${uniquename}`)
+  if(check){
+    return <Collab room_name = {uniquename}/> 
   }
 
 
@@ -40,7 +64,7 @@ const Create: React.FC = () => {
     <TextField label="passcode" variant="outlined" type='password' onChange={(e)=>{setPasscode(e.target.value)}}/>
     </div>
     <div className='pd-2'>
-    <Button variant='outlined' color='success' onClick={handleCreateRoom}>Create room</Button>
+    <Button variant='outlined' color='success' onClick={handleCreateRoom} disabled = {passcode.length == 0 ? true : false}>Create room</Button>
     </div>
     <div>
       <p>Video/Gif</p>

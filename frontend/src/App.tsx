@@ -1,14 +1,30 @@
 import './App.css'
 import Home from './pages/Home'
-import { Link } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
+import Join from './pages/Join.tsx'
+import Create from './pages/Create.tsx'
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home/>
+  },
+  {
+    path: '/join',
+    element: <Join/>
+  },
+  {
+    path: '/create',
+    element: <Create/>
+  },
+])
+
 function App() {
 
   return (
     <>
-    {/* <Link to={"/room1"}>
-      Click to join room
-    </Link> */}
-    <Home/>
+    <RouterProvider router={router}/>
     </>
   )
 }

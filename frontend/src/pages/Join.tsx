@@ -1,22 +1,44 @@
 import React, {useState} from 'react'
-import { useNavigate } from 'react-router-dom';
 import { TextField, Typography, Button } from '@mui/material'
+import axios from 'axios';
+import Collab from './Collab';
 
 const Join: React.FC = () => {
   const [uniquename, setUniquename] = useState<string>("");
   const [passcode, setPasscode] = useState<string>("");
-  const navigate = useNavigate();
+  const [check, setCheck] = useState<boolean>(false)
 
   const handleJoinRoom: React.MouseEventHandler<HTMLButtonElement> | undefined = ()=>{
-    console.log("Unique name: ", uniquename);
-    console.log("passcode: ", passcode);
-    if(passcode === "123456"){
-      navigate("/room1")
-    }
-    else{
-      setPasscode("");
-      alert("Wrong Credentials!")
-    }
+    const url = import.meta.env.VITE_BASE_URL  +"join";
+    axios.post(url,{
+        room_name: uniquename,
+        passcode: passcode
+      }, 
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      }
+    ).then(({data})=>{
+      const result = data["check"]
+      if(result === true ){
+        setCheck(true)
+      }
+      else if(result === false) {
+        setPasscode("");
+        alert("Wrong Credentials!")
+      }
+      else{
+        setPasscode("");
+        alert(result);
+      }
+    })
+
+  }
+
+  if(check){
+    return <Collab room_name = {uniquename}/> 
   }
 
   return (
