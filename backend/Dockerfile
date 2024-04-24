@@ -44,7 +44,6 @@ USER appuser
 # Copy the source code into the container.
 COPY . .
 
-ENV MONGODB_URI=mongodb+srv://Beyond_Zero:MyBeyondZeroDB@cluster0.2sbj3yu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 # Expose the port that the application listens on.
 EXPOSE 8000
