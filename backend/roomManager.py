@@ -9,13 +9,11 @@ class Room:
 
     async def join(self, websocket: WebSocket):
         self.connections.append(websocket)
-        print("data = ", self.data)
         if self.data:
             await websocket.send_text(self.data)
 
     async def leave(self, websocket: WebSocket):
         self.connections.remove(websocket)
-        print(f"{websocket.client} left the room!")
         self.connections.remove(websocket)
 
     async def send_personal_message(self, md: str, websocket : WebSocket):

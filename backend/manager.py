@@ -9,15 +9,12 @@ class ConnectionManager:
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
-        print("connection established!")
         self.active_connections.append(websocket)
 
     def disconnect(self, websocket: WebSocket):
         print("connection demolish!")
-        self.active_connections.remove(websocket)
 
     async def send_personal_message(self, md: str, websocket: WebSocket, room_name: str):
-        print("list of rooms available here!!",self.rooms or 'no room')
         if room_name in self.rooms:
             await self.rooms[room_name].send_personal_message(md, websocket)
         else:
@@ -27,7 +24,6 @@ class ConnectionManager:
         if room_name:
             room = self.rooms[room_name]
             if room:
-                print("getting into room to broadcast this message ", md)
                 await room.broadcast(md)
         else:
             for conn in self.active_connections:
@@ -47,7 +43,7 @@ class ConnectionManager:
     
     async def leave_room(self, websocket: WebSocket, room_name: str):
         if room_name in self.rooms and websocket in self.active_connections:
-            self.rooms[room_name].leave(websocket)
+            await self.rooms[room_name].leave(websocket)
             self.active_connections.remove(websocket)
     
     

@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import io
 from fastapi import WebSocket, WebSocketDisconnect
 from manager import ConnectionManager
+from model import Room_model
+from database import save_room, check_passcode
 
 app = FastAPI()
 
@@ -32,15 +34,33 @@ async def upload(file: UploadFile):
     raise HTTPException(status_code=500, detail='Upload failed. Please try again.')
   
 
+@app.post("/create")
+async def create_room(create_room: Room_model):
+   try:
+      result = await save_room(create_room)
+      print(result)
+      return result
+   except Exception as e:
+      print(e)
+      return e
+
+@app.post("/join")
+async def check_passcode_for_room(join_room: Room_model):
+   try:
+      result = await check_passcode(join_room)
+      return result
+   except Exception as e:
+      print(e)
+      return e
+   
+
+
 
 @app.websocket("/ws/default")
 async def websocket_enpoint(websocket: WebSocket):
    room_name = "default"
    await manager.connect(websocket)
-   print(f"{websocket.client} just get added")
-   print(manager.active_connections)
    await manager.join_room(websocket, room_name)
-   print(manager.rooms[room_name].connections, f"are in the {room_name}")
    try: 
       while True:
          data = await websocket.receive_text()
@@ -59,7 +79,6 @@ async def websocket_enpoint(websocket: WebSocket, room_name: str):
    try: 
       while True:
          data = await websocket.receive_text()
-         # await manager.send_personal_message(data, websocket, room_name)
          await manager.broadcast(data, room_name, websocket)
    except WebSocketDisconnect:
       await manager.leave_room(websocket, room_name)
