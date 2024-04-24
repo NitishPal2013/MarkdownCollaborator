@@ -3,6 +3,7 @@ import { TextField, Typography, Button } from '@mui/material'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator';
 import axios from 'axios';
 import Collab from './Collab';
+import Mainimage from '../components/Mainimage';
 
 const Create: React.FC = () => {
 
@@ -67,7 +68,7 @@ const Create: React.FC = () => {
     <Button variant='outlined' color='success' onClick={handleCreateRoom} disabled = {passcode.length == 0 ? true : false}>Create room</Button>
     </div>
     <div>
-      <p>Video/Gif</p>
+      <Mainimage/>
     </div>
     </>
   )

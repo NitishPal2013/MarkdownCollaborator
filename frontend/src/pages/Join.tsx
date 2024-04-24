@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { TextField, Typography, Button } from '@mui/material'
 import axios from 'axios';
 import Collab from './Collab';
+import Mainimage from '../components/Mainimage';
 
 const Join: React.FC = () => {
   const [uniquename, setUniquename] = useState<string>("");
@@ -57,7 +58,7 @@ const Join: React.FC = () => {
     <Button variant='outlined' color='success' onClick={handleJoinRoom}>Enter in room</Button>
     </div>
     <div>
-      <p>Video/Gif</p>
+      <Mainimage/>
     </div>
     </>
   )

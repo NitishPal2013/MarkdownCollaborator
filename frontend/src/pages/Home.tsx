@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Button } from '@mui/material'
 import { Link } from 'react-router-dom'
+import Mainimage from '../components/Mainimage'
 
 
 
@@ -11,7 +12,7 @@ return(
     className='mx-auto center mt-4'
     >
     <Container>
-        <p>Video/Gif</p>
+        <Mainimage/>
     </Container>
     <Container sx={{
         display: 'flex',
